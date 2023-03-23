@@ -1,3 +1,6 @@
+# The slowest version as it does not vectorize anything
+# It's loops over loops
+
 import numpy as np
 import matplotlib.pyplot as plt
 import time
@@ -9,7 +12,7 @@ def main():
     L = 1024.
     dt = L/Ncells
 
-    k = np.fft.fftfreq(Ncells, dt)
+    k = 2*np.pi*np.fft.fftfreq(Ncells, dt)
 
     kx, ky, kz = np.meshgrid(k,k,k, indexing="ij")
 
@@ -18,18 +21,15 @@ def main():
     seed = 42
     np.random.seed(seed)
 
-    particles = np.random.rand(3,3000)*L
+    Npoints = 300
+    particles = np.random.rand(3,Npoints)*L
 
 
     start = time.perf_counter()
-    for i in range(Ncells):
-        for j in range(Ncells):
-            for l in range(Ncells):
-                PS_grid[i,j,l] = np.sum(np.exp(-1j*(kx[i,j,l]*particles[0,:]+ky[i,j,l]*particles[1,:]+kz[i,j,l]*particles[2,:])), axis=-1)
+    for j in range(Npoints):
+        PS_grid += 1/Npoints*np.exp(-1j*(kx*particles[0,j]+ky*particles[1,j]+kz*particles[2,j]))
     end = time.perf_counter()
     print(f'Time needed for the direct summation: {np.round(end-start,3)} seconds')
-
-    #Note: You could actually do in parallel if you make the PS_grid a shared memory object and then write to the different k's in parallel
 
 if __name__ == "__main__":
     main()
