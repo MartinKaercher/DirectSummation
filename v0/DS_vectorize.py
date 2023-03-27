@@ -18,11 +18,8 @@ def main():
 
     PS_grid = np.zeros_like(kx, dtype=np.complex_)
 
-    seed = 42
-    np.random.seed(seed)
-
-    Npoints = 300
-    particles = np.random.rand(3,Npoints)*L
+    Npoints = 1000
+    particles = np.transpose(np.loadtxt("../Data_Set.txt"))
 
 
     start = time.perf_counter()
@@ -32,6 +29,7 @@ def main():
                 PS_grid[i,j,l] = 1/Npoints*np.sum(np.exp(-1j*(kx[i,j,l]*particles[0,:]+ky[i,j,l]*particles[1,:]+kz[i,j,l]*particles[2,:])), axis=-1)
     end = time.perf_counter()
     print(f'Time needed for the direct summation: {np.round(end-start,3)} seconds')
+    print(PS_grid[0,0,:])
 
 if __name__ == "__main__":
     main()
