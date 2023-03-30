@@ -81,6 +81,7 @@ int main(int argc, char *argv[]){
     clock_t start, end;
     start = clock();
 
+    //EXPLOIT SYMMETRY, SUCH THAT YOU ONLY HAVE TO COMPUTE HALF THE k-grid IN EACH DIRECTION
     for (j=0; j<=Ncells-1; j++){
         for (l=0; l<=Ncells-1; l++){
             for (m=0; m<=Ncells-1; m++){
