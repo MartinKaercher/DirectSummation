@@ -3,6 +3,7 @@
 #include <math.h>
 #include <time.h>
 #include <string.h>
+#include <omp.h>
 
 double vec_mult_3D(double *v1, double *v2){
     double ret_vec;
@@ -81,11 +82,12 @@ int main(int argc, char *argv[]){
     counter = 0;
     double exponent, real_part, imag_part, norm;
     norm = 1./NumPoints;
-    clock_t start, end;
-    start = clock();
 
     
     // First do the frequencies which have a counterpart
+    double start_tot, end_tot;
+    start_tot = omp_get_wtime();
+    #pragma omp parallel for
     for (j=0; j<=Ncells/2; j++){
         for (l=0; l<=Ncells/2; l++){
             for (m=0; m<=Ncells/2; m++){
@@ -190,8 +192,9 @@ int main(int argc, char *argv[]){
         }
 
 
-    end = clock();
-    printf("Elapsed time is: %f \n", ((double)end-start)/CLOCKS_PER_SEC);
+    end_tot = omp_get_wtime();
+    printf("Time used: %f seconds \n", end_tot-start_tot); 
+
     for (l=0; l<=Ncells-1; l++){
        printf("%f %fj\n", delta_k_real[l], delta_k_imag[l]);
     }
