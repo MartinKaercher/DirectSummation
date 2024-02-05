@@ -192,9 +192,7 @@ int main(int argc, char *argv[]){
 
     end = clock();
     printf("Elapsed time is: %f \n", ((double)end-start)/CLOCKS_PER_SEC);
-    for (l=0; l<=Ncells-1; l++){
-       printf("%f %fj\n", delta_k_real[l], delta_k_imag[l]);
-    }
+    printf("%f %fj\n", delta_k_real[10], delta_k_imag[10]);
 
     free(point_set);
     free(grid_x);

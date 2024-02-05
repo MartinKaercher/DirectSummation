@@ -4,12 +4,6 @@
 #include <time.h>
 #include <string.h>
 
-double vec_mult_3D(double *v1, double *v2){
-    double ret_vec;
-    ret_vec = (v1[0] * v2[0] + v1[1] * v2[1] + v1[2] * v2[2]);
-    return ret_vec;
-}
-
 int main(int argc, char *argv[]){
     printf("# Direct Summation with for loops in C  #\n");
 
@@ -95,9 +89,7 @@ int main(int argc, char *argv[]){
 
     end = clock();
     printf("Elapsed time is: %f \n", ((double)end-start)/CLOCKS_PER_SEC);
-    for (l=0; l<=Ncells-1; l++){
-       printf("%f %fj\n", delta_k_real[0][0][l], delta_k_imag[0][0][l]);
-    }
+    printf("%f %fj\n", delta_k_real[0][0][10], delta_k_imag[0][0][10]);
 
     return 0;
 }

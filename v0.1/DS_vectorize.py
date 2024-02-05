@@ -10,14 +10,14 @@ def DS():
     for i in range(Ncells):
         for j in range(Ncells):
             for l in range(Ncells):
-                for m in range(Npoints):
-                    PS_grid[i,j,l] += 1/Npoints*np.exp(-1j*(kx[i,j,l]*particles[0,m]+ky[i,j,l]*particles[1,m]+kz[i,j,l]*particles[2,m]))
+                PS_grid[i,j,l] = 1/Npoints*np.sum(np.exp(-1j*(kx[i,j,l]*particles[0,:]+ky[i,j,l]*particles[1,:]+kz[i,j,l]*particles[2,:])), axis=-1)
     end = time.perf_counter()
     print(f'Time needed for the direct summation: {np.round(end-start,3)} seconds')
     print(PS_grid[0,0,10])
 
 
 if __name__ == "__main__":
+
     Ncells = 32
     L = 1024.
     dt = L/Ncells
