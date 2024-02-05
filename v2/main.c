@@ -195,9 +195,7 @@ int main(int argc, char *argv[]){
     end_tot = omp_get_wtime();
     printf("Time used: %f seconds \n", end_tot-start_tot); 
 
-    for (l=0; l<=Ncells-1; l++){
-       printf("%f %fj\n", delta_k_real[l], delta_k_imag[l]);
-    }
+    printf("%f %fj\n", delta_k_real[10], delta_k_imag[10]);
 
     free(point_set);
     free(grid_x);
