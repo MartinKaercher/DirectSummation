@@ -3,9 +3,8 @@
 #include <math.h>
 #include <time.h>
 #include <string.h>
-#include <omp.h>
 
-
+// Same as version 1.5 but using loop unrolling for the innermost loop
 int main(int argc, char *argv[]){
     printf("# Direct Summation with for loops in C  #\n");
 
@@ -67,28 +66,45 @@ int main(int argc, char *argv[]){
     }
     
     // Compute power spectrum on this grid
+    //double delta_k_real[Ncells][Ncells][Ncells];
+    //double delta_k_imag[Ncells][Ncells][Ncells];
     double *delta_k_real = malloc((Ncells*Ncells*Ncells)*sizeof(double));
     double *delta_k_imag = malloc((Ncells*Ncells*Ncells)*sizeof(double));
     int l;
     int m; 
     counter = 0;
-    double exponent, norm;
+    double exponent1, exponent2, exponent3, exponent4, exponent5, exponent6, exponent7, exponent8, exponent9, exponent10, norm;
     norm = 1./NumPoints;
+    clock_t start, end;
+    start = clock();
 
+    double aux_real, aux_imag;
     
     // First do the frequencies which have a counterpart
-    double start_tot, end_tot;
-    start_tot = omp_get_wtime();
-    #pragma omp parallel for
     for (j=0; j<=Ncells/2; j++){
         for (l=0; l<=Ncells/2; l++){
             for (m=0; m<=Ncells/2; m++){
-                for (counter=0; counter<=NumPoints-1; counter++){
-                    exponent = point_set[counter*3] * grid_x[j] + point_set[counter*3+1] * grid_x[l*Ncells] + point_set[counter*3+2] * grid_x[m];
-                    delta_k_real[j*Ncells*Ncells + l*Ncells + m] += norm*cos(exponent);
-                    delta_k_imag[j*Ncells*Ncells + l*Ncells + m] += -norm*sin(exponent);
+                aux_real = 0;
+                aux_imag = 0;
+                for (counter=0; counter<=NumPoints/10-1; counter++){
+                    exponent1 = point_set[counter*30] * grid_x[j] + point_set[counter*30+1] * grid_x[l*Ncells] + point_set[counter*30+2] * grid_x[m];
+                    exponent2 = point_set[counter*30+3] * grid_x[j] + point_set[counter*30+4] * grid_x[l*Ncells] + point_set[counter*30+5] * grid_x[m];
+                    exponent3 = point_set[counter*30+6] * grid_x[j] + point_set[counter*30+7] * grid_x[l*Ncells] + point_set[counter*30+8] * grid_x[m];
+                    exponent4 = point_set[counter*30+9] * grid_x[j] + point_set[counter*30+10] * grid_x[l*Ncells] + point_set[counter*30+11] * grid_x[m];
+                    exponent5 = point_set[counter*30+12] * grid_x[j] + point_set[counter*30+13] * grid_x[l*Ncells] + point_set[counter*30+14] * grid_x[m];
+                    exponent6 = point_set[counter*30+15] * grid_x[j] + point_set[counter*30+16] * grid_x[l*Ncells] + point_set[counter*30+17] * grid_x[m];
+                    exponent7 = point_set[counter*30+18] * grid_x[j] + point_set[counter*30+19] * grid_x[l*Ncells] + point_set[counter*30+20] * grid_x[m];
+                    exponent8 = point_set[counter*30+21] * grid_x[j] + point_set[counter*30+22] * grid_x[l*Ncells] + point_set[counter*30+23] * grid_x[m];
+                    exponent9 = point_set[counter*30+24] * grid_x[j] + point_set[counter*30+25] * grid_x[l*Ncells] + point_set[counter*30+26] * grid_x[m];
+                    exponent10 = point_set[counter*30+27] * grid_x[j] + point_set[counter*30+28] * grid_x[l*Ncells] + point_set[counter*30+29] * grid_x[m];
+
+
+                    aux_real += cos(exponent1) + cos(exponent2) + cos(exponent3) + cos(exponent4) + cos(exponent5) + cos(exponent6) + cos(exponent7) + cos(exponent8) + cos(exponent9) + cos(exponent10);
+                    aux_imag += -sin(exponent1) - sin(exponent2) - sin(exponent3) - sin(exponent4) - sin(exponent5) - sin(exponent6) - sin(exponent7) - sin(exponent8) - sin(exponent9) - sin(exponent10);
                 }
-                if (j>0 && l>0 && m>0 && j<Ncells/2 && l<Ncells/2 && m<Ncells/2){
+                delta_k_real[j*Ncells*Ncells + l*Ncells + m] += norm*aux_real;
+                delta_k_imag[j*Ncells*Ncells + l*Ncells + m] += norm*aux_imag;
+                if (j>0 && l>0 && m>0 && j<Ncells/2 && l<Ncells/2 && m<Ncells/2){ // Taking care of the extra cases
                 delta_k_real[(Ncells-j)*Ncells*Ncells + (Ncells-l)*Ncells + (Ncells-m)] = delta_k_real[j*Ncells*Ncells + l*Ncells + m];
                 delta_k_imag[(Ncells-j)*Ncells*Ncells  + (Ncells-l)*Ncells  + (Ncells-m)] = -delta_k_imag[j*Ncells*Ncells  + l*Ncells + m];
                 delta_k_real[(Ncells-j)*Ncells*Ncells  + (Ncells-l)*Ncells  + m] = delta_k_real[j*Ncells*Ncells  + l*Ncells + m];
@@ -184,9 +200,8 @@ int main(int argc, char *argv[]){
         }
 
 
-    end_tot = omp_get_wtime();
-    printf("Time used: %f seconds \n", end_tot-start_tot); 
-
+    end = clock();
+    printf("Elapsed time is: %f \n", ((double)end-start)/CLOCKS_PER_SEC);
     printf("%f %fj\n", delta_k_real[10], delta_k_imag[10]);
 
     free(point_set);

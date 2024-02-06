@@ -1,6 +1,7 @@
 CC = gcc # Compiler
-CF = -pedantic -Wall -Werror# compile flags
-CL = -lm
+CF = -O3 -pedantic -Wall -Werror# compile flags
+CL = -lm 
+
 all: main
 
 main: main.c
