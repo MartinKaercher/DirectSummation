@@ -50,7 +50,6 @@ int main(int argc, char *argv[]){
     int Ncells = 32;
     double L = 1024.;
     double dt = L/Ncells;
-    double n_bar = NumPoints/(L*L*L);
 
     int j;
     double grid_x[Ncells];

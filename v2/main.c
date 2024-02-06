@@ -5,11 +5,6 @@
 #include <string.h>
 #include <omp.h>
 
-double vec_mult_3D(double *v1, double *v2){
-    double ret_vec;
-    ret_vec = (v1[0] * v2[0] + v1[1] * v2[1] + v1[2] * v2[2]);
-    return ret_vec;
-}
 
 int main(int argc, char *argv[]){
     printf("# Direct Summation with for loops in C  #\n");
@@ -57,7 +52,6 @@ int main(int argc, char *argv[]){
     int Ncells = 32;
     double L = 1024.;
     double dt = L/Ncells;
-    double n_bar = NumPoints/(L*L*L);
 
     int j;
     double *grid_x = malloc(Ncells*sizeof(double));
@@ -80,7 +74,7 @@ int main(int argc, char *argv[]){
     int l;
     int m; 
     counter = 0;
-    double exponent, real_part, imag_part, norm;
+    double exponent, norm;
     norm = 1./NumPoints;
 
     
